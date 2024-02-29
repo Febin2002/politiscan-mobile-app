@@ -15,16 +15,7 @@ const LoginScreen = ({navigation}) => {
     console.log('Email:', email);
     console.log('Password:', password);
     console.log('Remember Me:', rememberMe);
-    try{
-        const response=await axios.post('BackEnd_URL/api/login', {
-          email,
-          password
-        });
-        const userData = response.data.user;
-        navigation.navigate('DashboardUser', {userData});
-    }catch(error){
-      Alert.alert("Login Failed", "Invalid email or password");
-    }
+    navigation.navigate('dash')
   };
 
   const handleSignUp = () => {
