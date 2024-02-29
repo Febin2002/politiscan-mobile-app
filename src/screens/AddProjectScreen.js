@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import axios from 'axios';
 
 const AddProjectScreen = () => {
     const [projectId, setProjectId] = useState('');
@@ -18,10 +19,25 @@ const AddProjectScreen = () => {
         
     };
 
-    const handleAddProject = () => {
+    const handleAddProject = async () => {
         // Here you can handle adding the project to your database or perform any other actions
         console.log('Project ID:', projectId);
         console.log('Project Description:', projectDescription);
+        try{
+
+            const response = await axios.post('BackEnd_url/api/addProject', {
+                projectId,
+                projectDescription
+            });
+
+        if(response.status === 200){
+            navigation.navigate('AdminDashboard');
+        }
+        }catch(error){
+            console.error('Error adding project:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+
     };
 
     return (

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RadioButton } from 'react-native-paper';
+import axios from 'axios';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -9,12 +10,21 @@ const LoginScreen = ({navigation}) => {
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     console.log('Login pressed');
     console.log('Email:', email);
     console.log('Password:', password);
     console.log('Remember Me:', rememberMe);
-    navigation.navigate('dash')
+    try{
+        const response=await axios.post('BackEnd_URL/api/login', {
+          email,
+          password
+        });
+        const userData = response.data.user;
+        navigation.navigate('DashboardUser', {userData});
+    }catch(error){
+      Alert.alert("Login Failed", "Invalid email or password");
+    }
   };
 
   const handleSignUp = () => {

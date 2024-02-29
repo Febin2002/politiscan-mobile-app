@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
+import axios from 'axios';
 
 const SignupScreen = () => {
   const [name, setName] = useState('');
@@ -15,7 +16,7 @@ const SignupScreen = () => {
   const [aadharImage, setAadharImage] = useState(null);
   const [userType, setUserType] = useState('user'); // 'user' or 'admin'
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     // Implement your signup logic here
     console.log('Signup pressed');
     console.log('Name:', name);
@@ -30,6 +31,25 @@ const SignupScreen = () => {
     console.log('Aadhar Image:', aadharImage);
     console.log('User Type:', userType);
     // Add your signup/authentication logic here (e.g., API calls, authentication services)
+    try{
+      const response=await axios.post('BackEnd_URL/api/signup', {
+          name,
+          age,
+          gender,
+          constituency,
+          mobileNumber,
+          adminId,
+          profileImage,
+          aadharImage,
+          email,
+          password,
+          userType
+      });
+      const userData = response.data.user;
+      navigation.navigate('verification', {userData});
+      }catch(error){
+        Alert.alert("Signup Failed");
+      }
   };
 
   const pickDocument = async (type) => {
