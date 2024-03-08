@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
-import { Api } from '../constants';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import axios from 'axios';
 
 const AddProjectScreen = ({ navigation, route }) => {
     const { constituency } = route.params;
@@ -20,38 +20,28 @@ const AddProjectScreen = ({ navigation, route }) => {
         setProjectId(characters + randomId.toString());
     };
 
-    const handleAddProject = async() => {
+    const handleAddProject = async () => {
         // Here you can handle adding the project to your database or perform any other actions
         console.log('Project ID:', projectId);
         console.log('Project Name:', projectName);
         console.log('Project Type:', projectType);
         console.log('Total Budget:', totalBudget);
         console.log('Project Description:', projectDescription);
+        try{
 
-        if (!constituency || !projectId.trim() || !projectName.trim() || !projectType.trim() || !totalBudget.trim() || !projectDescription.trim()) {
-            Alert.alert('Error', 'All fields are required');
-            return;
-        }
-
-
-        try {
-            const response = await axios.post('/projectadd', {
-                info: { constituency, projectId, projectName, projectType, totalBudget, projectDescription }
+            const response = await axios.post('BackEnd_url/api/addProject', {
+                projectId,
+                projectDescription
             });
-        
-            console.log('Response:', response); 
-        
-            if (response.data && response.data.message) {
-                Alert.alert("Success", response.data.message);
-                navigation.goBack(); 
-            } else if (response.data && response.data.error) {
-                Alert.alert("Error", "Project ID and Project Name need to be unique. Please try again.");
-            } else {
-                Alert.alert("Error", "Please try again.");
-            }
-        } catch (error) {
-            Alert.alert("Error", error.message || "An error occurred while adding the project. Please try again.");
+
+        if(response.status === 200){
+            navigation.navigate('AdminDashboard');
         }
+        }catch(error){
+            console.error('Error adding project:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+
     };
 
     return (

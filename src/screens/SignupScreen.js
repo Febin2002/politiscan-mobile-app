@@ -1,258 +1,46 @@
 import React, { useState, useEffect,useRef } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert, Platform, PermissionsAndroid ,ScrollView} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+
+import * as DocumentPicker from 'expo-document-picker';
 import axios from 'axios';
-import * as ImagePicker from 'expo-image-picker';
-import { firebase } from '../firebase/config';
-import 'firebase/storage'; 
-import * as FileSystem from 'expo-file-system';
-import { useFocusEffect } from '@react-navigation/native';
-import { Api } from '../constants';
-import { setWidth } from '../utils';
-import LottieView from 'lottie-react-native';
 
-import { constituencies,districtList } from '../constants/constituency';
+const SignupScreen = () => {
+  const [name, setName] = useState('');
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
+  const [constituency, setConstituency] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [adminId, setAdminId] = useState('');
+  const [profileImage, setProfileImage] = useState(null);
+  const [aadharImage, setAadharImage] = useState(null);
+  const [userType, setUserType] = useState('user'); // 'user' or 'admin'
 
-const SignupScreen = ({navigation}) => {
-  const animation = useRef(null);
-  const [signClick,setSignClick] = useState(false)
-  
-
-  useFocusEffect(
-    React.useCallback(() => {
-      return () => {
-        setSignClick(false)
-      };
-    }, [])
-  );
-
-  const [constituenciesList, setConstituenciesList] = useState([]);
-
-  const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    gender: '',
-    district:'',
-    aadharNo:'',
-    constituency: '',
-    mobileNumber: '',
-    email: '',
-    password: '',
-    adminId: '',
-    profileImage: null,
-    aadharImage: null,
-    userType: 'user'
-  });
-
-  useEffect(() => {
-    if (formData.district) {
-      setConstituenciesList(constituencies[formData.district]);
-    }
-  }, [formData.district]);
-
-
-
-
-  const [profile,setProfile]=useState();
-  const [aadhar,setAadhar]=useState();
-
-
-
-  const [errors, setErrors] = useState({
-    name: false,
-    age: false,
-    gender: false,
-    district:false,
-    constituency: false,
-    mobileNumber: false,
-    aadharNo:false,
-    email: false,
-    password: false,
-    adminId: false,
-    profileImage: false,
-    aadharImage:false
-  });
-
-  useEffect(() => {
-    if (Platform.OS === 'android') {
-      requestStoragePermission();
-    }
-  }, []);
-
-  const requestStoragePermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        {
-          title: 'Storage Permission',
-          message: 'App needs access to your storage to upload images/documents.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        }
-      );
-      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Storage permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
-    }
+  const handleSignup = () => {
+    // Implement your signup logic here
+    console.log('Signup pressed');
+    console.log('Name:', name);
+    console.log('Age:', age);
+    console.log('Gender:', gender);
+    console.log('Constituency:', constituency);
+    console.log('Mobile Number:', mobileNumber);
+    console.log('Email:', email);
+    console.log('Password:', password);
+    console.log('Admin ID:', adminId);
+    console.log('Profile Image:', profileImage);
+    console.log('Aadhar Image:', aadharImage);
+    console.log('User Type:', userType);
+    // Add your signup/authentication logic here (e.g., API calls, authentication services)
   };
 
-  const uploadDocumentToFirebase = async (documentUri) => {
+  const pickDocument = async (type) => {
     try {
-      const response = await fetch(documentUri);
-      const blob = await response.blob();
-  
-      const filename = Date.now() + '_' + documentUri.split('/').pop();
-      const reference = firebase.storage().ref().child(filename);
-      console.log(reference)
-      const uploadTask = reference.put(blob);
-  
-      await uploadTask;
-  
-      const downloadURL = await reference.getDownloadURL();
-      console.log(downloadURL)
-      return downloadURL;
-    } catch (error) {
-      console.error('Error uploading document:', error);
-      throw error; 
-    }
-  };
-
-  const validPhonenumber=()=>{
-    if(formData.mobileNumber.length!=10){
-      Alert.alert("info","Invalid mobile Number")
-      return false
-    }
-    else{
-      return true
-    }
-  }
- const validAadhar=()=>{
-    if(formData.aadharNo.length!=12){
-      Alert.alert("info","Enter the valid Aadhar number")
-      return false;
-    }
-    else{
-      return true
-    }
-  }
-
-  const passwordCheck=()=>{
-    if(formData.password.length<8){
-      Alert.alert("info", "Enter a strong password")
-      return false
-    }
-    else{
-      return true
-    }
-  }
-  const emailvalidate=()=>{
-    const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail.com$/;
-    if (!gmailRegex.test(formData.email)) {
-      Alert.alert("Error","Provide a valid Email")
-      return false
-    }
-    else{
-      return true
-    }
-
-  }
-     
-        
-
-     
-  const handleSignup = async () => {
-    
-    if(validPhonenumber() && validAadhar() && passwordCheck() && emailvalidate()){
-    if (validateFields()) {
-      setSignClick(true)
-      
-
-      console.log('Signup pressed');
-      console.log('Form Data:', formData.aadharImage);
-
-      
-      try {
-        const profileImageUpload = await uploadDocumentToFirebase(formData.profileImage);
-        const aadharImageUpload = await uploadDocumentToFirebase(formData.aadharImage);
-        
-        setFormData(prevState => ({
-          ...prevState,
-          profileImage: profileImageUpload,
-          aadharImage: aadharImageUpload
-        }));
-        setAadhar(aadharImageUpload);
-        setProfile(profileImageUpload)
-      
-        console.log('Profile Image URL:', profileImageUpload);
-        console.log('Aadhar Image URL:', aadharImageUpload);
-
-        console.log(formData)
-        
-        
-      
-      } catch (error) {
-        setSignClick(false)
-        console.error('Error uploading documents:', error);
-        Alert.alert('Error', 'Failed to upload documents. Please try again.');
-      }
-      
-    } else {
-      Alert.alert('Error', 'Please fill out all required fields.');
-    }
-    if (validateFields()) {
-    try {
-      const response = await axios.post(`${Api.API_BACKEND}/verification`, {
-        info:formData,
-        aadhar:aadhar,
-        profile:profile
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images, DocumentPicker.types.pdf], // Specify allowed document types
       });
-
-
-      console.log(response)
-
-
-      if(response.data.message==="Account Already exists"){
-        Alert.alert("info","Account already exist")
-        setSignClick(false)
-        navigation.navigate('signup')
-
-      }
-      else if(response.data.message=="Email send"){
-        Alert.alert("info",`Email is send to ${formData.email}`)
-        navigation.navigate("validate",{info:formData,aadhar:aadhar,profile:profile})
-      }
-      else if(response.data.message){
-        Alert.alert("Error",response.data.message)
-        setSignClick(false)
-      }
-
-      else{
-        Alert.alert("Error","Please try again")
-        setSignClick(false)
-      }
-      console.log('Response:', response);
-    } catch (error) {
-      console.error('Error:', error);
-      setSignClick(false)
-    }
-  }
-}
-    
-  };
-
-  const pickImage = async (type) => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    console.log(result.assets[0].uri);
-
-    if (!result.cancelled) {
+  
       setFormData(prevState => ({
         ...prevState,
         [type === 'profile' ? 'profileImage' : 'aadharImage']: result.assets[0].uri

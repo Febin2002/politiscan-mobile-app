@@ -1,7 +1,10 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import React, { useState, useEffect ,useRef} from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RadioButton } from 'react-native-paper';
+import axios from 'axios';
 import axios from 'axios';
 import { useFocusEffect } from '@react-navigation/native';
 import LottieView from 'lottie-react-native'; // Import LottieView
@@ -23,6 +26,13 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = async () => {
+    console.log('Login pressed');
+    console.log('Email:', email);
+    console.log('Password:', password);
+    console.log('Remember Me:', rememberMe);
+    navigation.navigate('dash')
   const [token, setToken] = useState();
   const [loginClick,setLoginClick] = useState(false)
 
