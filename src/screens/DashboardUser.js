@@ -3,13 +3,25 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'rea
 import { images } from '../constants';
 import { setWidth } from '../utils';
 import { Seperator } from '../components';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 const DashboardUser = ({ navigation, route }) => {
   const { data } = route.params;
   console.log(data.profileImage)
+
+  const handleLogout = () => {    
+    navigation.navigate('login');
+  };
+
+
+
   return (
     <View style={styles.container}>
-      <Seperator height={setWidth(2)} />
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+      <MaterialCommunityIcons name="logout" size={24} color="black" />
+      </TouchableOpacity>
+      {/* <Seperator height={setWidth(2)} /> */}
       <View style={styles.header}>
         <Image
           source={{ uri: data.profileImage }}
@@ -22,32 +34,28 @@ const DashboardUser = ({ navigation, route }) => {
         <Text style={styles.label}>Constituency:</Text>
         <Text style={styles.info}>{data.constituency}</Text>
 
-        <Text style={styles.label}>MLA</Text>
-        <Text style={styles.info}>kanathil jamila</Text>
-
         <Text style={styles.label}>District:</Text>
         <Text style={styles.info}>{data.district}</Text>
 
         <Text style={styles.label}>Phone Number:</Text>
         <Text style={styles.info}>{data.mobileNumber}</Text>
 
+        <Text style={styles.label}>Aadhar No:</Text>
+        <Text style={styles.info}>{data.aadharNo}</Text>
+
         <Text style={styles.label}>Email ID:</Text>
         <Text style={styles.info}>{data.email}</Text>
       </View>
 
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('notification')}>
           <Text style={styles.buttonText}>Notification</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('projectlist',{data: data})}>
           <Text style={styles.buttonText}>Show Projects</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.centeredButtonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Centered Button Pressed')}>
-          <Text style={styles.buttonText}>Rate Projects</Text>
-        </TouchableOpacity>
-      </View>
+      
     </View>
   );
 };
@@ -56,7 +64,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-around',
 
   },
   header: {
@@ -118,6 +126,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     justifyContent: 'center'
+  },
+  logoutButton: {
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    marginBottom:-50,
+    borderRadius: 5,
   },
 });
 

@@ -9,15 +9,17 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/config-plugins": "~7.8.0",
+    "@expo/vector-icons": "^14.0.0",
     "@react-native-picker/picker": "2.6.1",
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.20",
     "axios": "^1.6.6",
     "deprecated-react-native-prop-types": "^5.0.0",
-    "expo": "~50.0.2",
+    "expo": "~50.0.11",
     "expo-document-picker": "~11.10.1",
-    "expo-file-system": "~16.0.7",
+    "expo-file-system": "~16.0.8",
     "expo-firebase-analytics": "^8.0.0",
     "expo-firebase-app": "^2.0.0",
     "expo-font": "~11.10.3",
@@ -42,7 +44,10 @@
     "victory-native": "^40.0.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "metro": "~0.80.4",
+    "metro-config": "~0.80.4",
+    "metro-resolver": "^0.80.6"
   },
-  "private": true
+  "privte": true
 }
