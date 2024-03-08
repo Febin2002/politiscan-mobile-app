@@ -35,7 +35,7 @@ const AddProjectScreen = ({ navigation, route }) => {
 
 
         try {
-            const response = await axios.post(`${Api.API_BACKEND}/project/projectadd`, {
+            const response = await axios.post('/projectadd', {
                 info: { constituency, projectId, projectName, projectType, totalBudget, projectDescription }
             });
         
