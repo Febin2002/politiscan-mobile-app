@@ -12,7 +12,7 @@ const ProjectListScreen = ({ navigation,route }) => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.post(`${Api.API_BACKEND}/project/getByConstituency`, {
+        const response = await axios.post(`${Api.API_BACKEND}/getByConstituency`, {
           constituency: data.constituency
         });
 
